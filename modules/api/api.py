@@ -420,10 +420,9 @@ class Api:
 
         return {}
 
-    def reloadapi(self):
-        reload_model_weights()
-
-        return {}
+    def reloadapi(self,name: str):
+        reload_model_weights(None,None,name)
+        return {name}
 
     def skip(self):
         shared.state.skip()

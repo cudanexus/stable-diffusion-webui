@@ -156,6 +156,7 @@ def model_hash(filename):
 
 def select_checkpoint():
     model_checkpoint = shared.opts.sd_model_checkpoint
+    print(f"Selected model checkpoint: {model_checkpoint}")
         
     checkpoint_info = checkpoint_alisases.get(model_checkpoint, None)
     if checkpoint_info is not None:
@@ -391,7 +392,7 @@ def repair_config(sd_config):
         karlo_path = os.path.join(paths.models_path, 'karlo')
         sd_config.model.params.noise_aug_config.params.clip_stats_path = sd_config.model.params.noise_aug_config.params.clip_stats_path.replace("checkpoints/karlo_models", karlo_path)
 
-        
+
 sd1_clip_weight = 'cond_stage_model.transformer.text_model.embeddings.token_embedding.weight'
 sd2_clip_weight = 'cond_stage_model.model.transformer.resblocks.0.attn.in_proj_weight'
 
@@ -470,14 +471,19 @@ def load_model(checkpoint_info=None, already_loaded_state_dict=None, time_taken_
     return sd_model
 
 
-def reload_model_weights(sd_model=None, info=None):
+def reload_model_weights(sd_model=None, info=None, name="/home/user/app/stable-diffusion-webui/models/Stable-diffusion/dreamlookai_rpg-v4-0_step_2000_38947b1e.safetensors"):
     from modules import lowvram, devices, sd_hijack
-    checkpoint_info = info or select_checkpoint()
-
+    # checkpoint_info = info or select_checkpoint()
+    checkpoint_info = CheckpointInfo(name)
+    checkpoint_info.register()
+    print("wwwwwwwwwwwwwwwwwwwwwwwwwww",name)
     if not sd_model:
         sd_model = shared.sd_model
+        print("---------->",sd_model.sd_checkpoint_info.filename)
+        print("Model Not None",checkpoint_info.filename)
 
     if sd_model is None:  # previous model load failed
+        print("Model is None",current_checkpoint_info)
         current_checkpoint_info = None
     else:
         current_checkpoint_info = sd_model.sd_checkpoint_info
